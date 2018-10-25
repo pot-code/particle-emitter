@@ -1,3 +1,11 @@
+import {
+	radial_direction_generator,
+	random_direction_generator,
+	random_light_color_generator,
+	random_size_generator,
+	exponential_attenuation_speed_generator
+} from './generators';
+
 /**
  * turn angle into radians form.
  * @param angle angle to transform, range [0, 360]
@@ -30,7 +38,6 @@ class ParticleEmitter {
 	private origin         : Array<number>;             // emitter origin
 	private particles      : Set<Particle>;
 	private renderListeners: Array<ListenerFunc>;
-	private staggeringCount: number;
 
 	// particle config
 	private color    : Function;
@@ -241,9 +248,11 @@ function main(interval: number) {
 	});
 	
 	emitter.add_pre_render_listener(<ListenerFunc>indicatorListener);
-	emitter.set_speed(() => 1);
-	emitter.set_size(() => 2);
+	emitter.set_direction(radial_direction_generator(10));
+	emitter.set_color(random_light_color_generator());
+	emitter.set_speed(exponential_attenuation_speed_generator(5, 20));
+	emitter.set_size(random_size_generator());
 	play();
 }
 
-main(30);
+main(20);

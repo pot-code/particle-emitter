@@ -23,7 +23,7 @@ export function random_light_color_generator(variant?: number) {
 	}
 }
 
-// WARN: variant 要小于 180 度
+// |variant| is recommanded to be less than 150
 export function random_direction_generator(variant?: number) {
 	variant = Math.abs(variant);
 	if (!variant) {
@@ -32,7 +32,6 @@ export function random_direction_generator(variant?: number) {
 		return () => {
 			let randomDirection = Math.floor(360 * Math.random()),
 			    reverseflag     = false
-					// randomVariant = variant;
 			return () => {
 				let finalDirection = randomDirection;
 				let randomVariant  = Math.floor(variant * Math.random());
@@ -66,17 +65,31 @@ export function radial_direction_generator(step?: number) {
 	}
 }
 
-export function random_size_generator(variant?:number) {
+export function random_size_generator(variant?: number) {
 	variant = Math.abs(variant);
 	if (!variant) {
-		return () => Math.floor(10 * Math.random());
-	} else {
+		return () => Math.max(3, Math.floor(10 * Math.random()));
+	}
+	else {
 		return () => {
-			let randomSize = Math.floor(10 * Math.random());
+			let randomSize = Math.max(3, Math.floor(10 * Math.random()));
 			return () => {
-			  let randomVariant = Math.floor(variant * Math.random());
+				let randomVariant = Math.floor(variant * Math.random());
 				return randomSize + randomVariant;
-			}
-		}
+			};
+		};
+	}
+}
+
+export function exponential_attenuation_speed_generator(initialSpeed?: number, periodScale?: number) {
+	initialSpeed = Math.abs(initialSpeed) || 7;
+	periodScale = Math.abs(periodScale) || 100;
+
+	let factor = Math.log(initialSpeed);
+	let a = factor * periodScale;
+
+	return () => {
+		let x = 0;
+		return () => Math.exp(a / ((x++) + periodScale));
 	}
 }
